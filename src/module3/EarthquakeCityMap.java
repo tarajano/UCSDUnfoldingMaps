@@ -107,15 +107,53 @@ public class EarthquakeCityMap extends PApplet {
 	public void draw() {
 	    background(10);
 	    map.draw();
-//	    addKey();
+	    addKey();
+	}
+	
+
+	// TODO. Complete method.
+	// 
+	private void addKey() {
+		//// Coordinates
+		// Icons' xCoord
+		float iconsX = 30;
+		float itemY = 100;
+		float itemYShift = 10;
+
+		// Radious Multiply
+		float radiousMult = 2;
+		
+		// Legend rectangle
+		fill(200);
+		rect(20, 50, 160, 250);
+		
+		// Legend header
+		textSize(20);
+		fill(0, 102, 153);		
+		text("Legend", 30, 60);
+		
+		// Legend icons
+		fill(red);
+		stroke(red);
+		ellipse(iconsX, itemY, largeMagnitudeRadious * radiousMult, largeMagnitudeRadious * radiousMult);
+		fill(orange);
+		stroke(orange);
+		ellipse(iconsX, itemY + itemYShift, mediumMagnitudeRadious * radiousMult, mediumMagnitudeRadious * radiousMult);
+		fill(yellow);
+		stroke(yellow);
+		ellipse(iconsX, itemY + itemYShift * 2, lowMagnitudeRadious * radiousMult, lowMagnitudeRadious * radiousMult);
+
+		// Leged Text
+		textSize(12);
+		fill(0, 0, 50);		
+		text("Large", iconsX, itemY);
+		text("Medium", iconsX, itemY + itemYShift );
+		text("Low", iconsX, itemY + itemYShift * 2);
 	}
 	
 	private void fillMarkersList(List<PointFeature> earthquakes){
 	    for(PointFeature pointFeat : earthquakes){
 	    	SimplePointMarker marker = createMarker(pointFeat);
-//	    	System.out.println( marker.getProperty("depth") + " | " + 
-//	    						marker.getProperty("magnitude") + " | " +
-//	    						marker.getLocation() );
 	    	markers.add(createMarker(pointFeat));
     	}
 	}
@@ -163,11 +201,4 @@ public class EarthquakeCityMap extends PApplet {
 	    }
 	}
 
-	// helper method to draw key in GUI
-	// TODO: Implement this method to draw the key
-	private void addKey() 
-	{	
-		// Remember you can use Processing's graphics methods here
-	
-	}
 }
