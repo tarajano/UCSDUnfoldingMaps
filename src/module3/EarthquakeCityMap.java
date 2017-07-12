@@ -2,6 +2,7 @@ package module3;
 
 //Java utilities libraries
 import java.util.ArrayList;
+import java.util.HashMap;
 //import java.util.Collections;
 //import java.util.Comparator;
 import java.util.List;
@@ -46,8 +47,20 @@ public class EarthquakeCityMap extends PApplet {
 	private float markerRadious = 10;
 	
     // Using Processing's color method to generate an int that represents the color yellow.  
-    int yellow = color(255, 255, 0);
+    private int yellow = color(240, 234, 39);
+    private int orange = color(231, 124, 31);
+    private int red = color(231, 46, 31);
+    
+    // Earthquake magnitude thresholds
+    private double lowMagnitude = 4.0;
+    private double mediumMagnitude = 4.9;
+    private double largeMagnitude = 5.0;
 
+    // Earthquake magnitude Radious
+    private int lowMagnitudeRadious = 3;
+    private int mediumMagnitudeRadious = 6;
+    private int largeMagnitudeRadious = 9;
+    
 	// Markers List
 	private List<Marker> markers;
 	
@@ -99,16 +112,48 @@ public class EarthquakeCityMap extends PApplet {
 	
 	private void fillMarkersList(List<PointFeature> earthquakes){
 	    for(PointFeature pointFeat : earthquakes){
-	    	SimplePointMarker m = createMarker(pointFeat);
+	    	SimplePointMarker marker = createMarker(pointFeat);
+//	    	System.out.println( marker.getProperty("depth") + " | " + 
+//	    						marker.getProperty("magnitude") + " | " +
+//	    						marker.getLocation() );
 	    	markers.add(createMarker(pointFeat));
     	}
 	}
 	
 	private SimplePointMarker createMarker(PointFeature feature){
 		SimplePointMarker marker = new SimplePointMarker(feature.getLocation());
+		HashMap props = new HashMap<String, String>();
+		props.put("magnitude", feature.getProperty("magnitude"));
+		props.put("depth", feature.getProperty("depth"));
+		marker.setProperties(props);
+		int markerRadious = pickMarkerRadiousByMagnitude(feature);
 		marker.setRadius(markerRadious);
-		marker.setColor(yellow);
+		int markerColor = pickMarkerColorByMagnitude(feature);
+		marker.setColor(markerColor);
+		marker.setStrokeColor(markerColor);
 		return marker;
+	}
+	
+	private int pickMarkerColorByMagnitude(PointFeature feature){
+		Float magnitude = Float.parseFloat(feature.getProperty("magnitude").toString());
+		if(magnitude < lowMagnitude){
+			return yellow;
+		}else if(magnitude >= lowMagnitude & magnitude < mediumMagnitude){
+			return orange;
+		}else{
+			return red;	
+		}
+	}
+	
+	private int pickMarkerRadiousByMagnitude(PointFeature feature){
+		Float magnitude = Float.parseFloat(feature.getProperty("magnitude").toString());
+		if(magnitude < lowMagnitude){
+			return lowMagnitudeRadious;
+		}else if(magnitude >= lowMagnitude & magnitude < mediumMagnitude){
+			return mediumMagnitudeRadious;
+		}else{
+			return largeMagnitudeRadious;	
+		}
 	}
 	
 	private void printPointsFeatures(List<PointFeature> earthquakes){
