@@ -15,8 +15,10 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import de.fhpotsdam.unfolding.providers.Google;
+import de.fhpotsdam.unfolding.providers.Microsoft;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
 import de.fhpotsdam.unfolding.utils.MapUtils;
+
 
 //Parsing library
 import parsing.ParseFeed;
@@ -40,6 +42,15 @@ public class EarthquakeCityMap extends PApplet {
 	// Less than this threshold is a minor earthquake
 	public static final float THRESHOLD_LIGHT = 4;
 
+	// Marker radious
+	private float markerRadious = 10;
+	
+    // Using Processing's color method to generate an int that represents the color yellow.  
+    int yellow = color(255, 255, 0);
+
+	// Markers List
+	private List<Marker> markers;
+	
 	/** This is where to find the local tiles, for working without an Internet connection */
 	public static String mbTilesString = "blankLight-1-3.mbtiles";
 	
@@ -55,10 +66,11 @@ public class EarthquakeCityMap extends PApplet {
 
 		if (offline) {
 		    map = new UnfoldingMap(this, 200, 50, 700, 500, new MBTilesMapProvider(mbTilesString));
-		    earthquakesURL = "2.5_week.atom"; 	// Same feed, saved Aug 7, 2015, for working offline
+		    earthquakesURL = "../data/2.5_week.atom"; 	// Same feed, saved Aug 7, 2015, for working offline
 		}
 		else {
-			map = new UnfoldingMap(this, 200, 50, 700, 500, new Google.GoogleMapProvider());
+//			map = new UnfoldingMap(this, 200, 50, 700, 500, new Google.GoogleMapProvider());
+			map = new UnfoldingMap(this, 200, 50, 700, 500, new Microsoft.RoadProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
 			earthquakesURL = "../data/2.5_week.atom";
 		}
@@ -67,44 +79,44 @@ public class EarthquakeCityMap extends PApplet {
 	    MapUtils.createDefaultEventDispatcher(this, map);	
 			
 	    // The List you will populate with new SimplePointMarkers
-	    List<Marker> markers = new ArrayList<Marker>();
+	    markers = new ArrayList<Marker>();
 
 	    //Use provided parser to collect properties for each earthquake
 	    //PointFeatures have a getLocation method
 	    List<PointFeature> earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
 	    
-	    // These print statements show you (1) all of the relevant properties 
-	    // in the features, and (2) how to get one property and use it
-	    if (earthquakes.size() > 0) {
-	    	PointFeature f = earthquakes.get(0);
-	    	System.out.println(f.getProperties());
-	    	Object magObj = f.getProperty("magnitude");
-	    	float mag = Float.parseFloat(magObj.toString());
-	    	// PointFeatures also have a getLocation method
-	    }
-	    
-	    // Here is an example of how to use Processing's color method to generate 
-	    // an int that represents the color yellow.  
-	    int yellow = color(255, 255, 0);
+	    fillMarkersList(earthquakes);
 	    
 	    //TODO: Add code here as appropriate
-	}
-		
-	// A suggested helper method that takes in an earthquake feature and 
-	// returns a SimplePointMarker for that earthquake
-	// TODO: Implement this method and call it from setUp, if it helps
-	private SimplePointMarker createMarker(PointFeature feature)
-	{
-		// finish implementing and use this method, if it helps.
-		return new SimplePointMarker(feature.getLocation());
+	    map.addMarkers(markers);
 	}
 	
 	public void draw() {
 	    background(10);
 	    map.draw();
-	    addKey();
+//	    addKey();
 	}
-
+	
+	private void fillMarkersList(List<PointFeature> earthquakes){
+	    for(PointFeature pointFeat : earthquakes){
+	    	SimplePointMarker m = createMarker(pointFeat);
+	    	markers.add(createMarker(pointFeat));
+    	}
+	}
+	
+	private SimplePointMarker createMarker(PointFeature feature){
+		SimplePointMarker marker = new SimplePointMarker(feature.getLocation());
+		marker.setRadius(markerRadious);
+		marker.setColor(yellow);
+		return marker;
+	}
+	
+	private void printPointsFeatures(List<PointFeature> earthquakes){
+	    for(PointFeature pointFeat : earthquakes){
+	    	// Properties: depth magnitude title age
+	    	System.out.println(pointFeat.getProperties());
+	    }
+	}
 
 	// helper method to draw key in GUI
 	// TODO: Implement this method to draw the key
