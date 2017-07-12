@@ -116,9 +116,10 @@ public class EarthquakeCityMap extends PApplet {
 	private void addKey() {
 		//// Coordinates
 		// Icons' xCoord
-		float iconsX = 30;
+		float iconsX = 50;
 		float itemY = 100;
-		float itemYShift = 10;
+		float itemYShift = 30;
+		float itemXShift = 15;
 
 		// Radious Multiply
 		float radiousMult = 2;
@@ -130,7 +131,7 @@ public class EarthquakeCityMap extends PApplet {
 		// Legend header
 		textSize(20);
 		fill(0, 102, 153);		
-		text("Legend", 30, 60);
+		text("Legend", 50, 80);
 		
 		// Legend icons
 		fill(red);
@@ -146,9 +147,9 @@ public class EarthquakeCityMap extends PApplet {
 		// Leged Text
 		textSize(12);
 		fill(0, 0, 50);		
-		text("Large", iconsX, itemY);
-		text("Medium", iconsX, itemY + itemYShift );
-		text("Low", iconsX, itemY + itemYShift * 2);
+		text("Large", iconsX + itemXShift, itemY);
+		text("Medium", iconsX + itemXShift, itemY + itemYShift );
+		text("Low", iconsX + itemXShift, itemY + itemYShift * 2);
 	}
 	
 	private void fillMarkersList(List<PointFeature> earthquakes){
