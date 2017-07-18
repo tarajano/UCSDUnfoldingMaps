@@ -1,6 +1,7 @@
 package module4;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -76,7 +77,7 @@ public class EarthquakeCityMap extends PApplet {
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
 		earthquakesURL = "../data/test1.atom";
-		//earthquakesURL = "../data/test2.atom";
+		// earthquakesURL = "../data/test2.atom";
 		
 		// WHEN TAKING THIS QUIZ: Uncomment the next line
 		//earthquakesURL = "../data/quiz1.atom";
@@ -111,7 +112,7 @@ public class EarthquakeCityMap extends PApplet {
 	    }
 
 	    // could be used for debugging
-	    printQuakes();
+	    printQuakes(quakeMarkers);
 	 		
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
@@ -166,6 +167,7 @@ public class EarthquakeCityMap extends PApplet {
 				return true;
 			}
 		}
+		earthquake.addProperty("country", "ocean");
 		return false;
 	}
 	
@@ -175,9 +177,24 @@ public class EarthquakeCityMap extends PApplet {
 	// the quakes to count how many occurred in that country.
 	// Recall that the country markers have a "name" property, 
 	// And LandQuakeMarkers have a "country" property set.
-	private void printQuakes() 
-	{
-		// TODO: Implement this method
+	private void printQuakes(List<Marker> quakes) {
+		HashMap<String, Integer> countryQuakeCount = new HashMap<String, Integer>();
+		Integer quakeCount = 0;
+		// Counting quakes per country
+		for(Marker quake: quakes){
+			String countryName = quake.getStringProperty("country");
+			if(countryQuakeCount.containsKey(countryName)){
+				quakeCount = countryQuakeCount.get(countryName) + 1;
+				countryQuakeCount.put(countryName, quakeCount);
+			} else {
+				countryQuakeCount.put(countryName, 1);
+			}
+		}
+		// Printing quakes per country
+		for( String countryName : countryQuakeCount.keySet() ){
+			quakeCount = countryQuakeCount.get(countryName);
+			System.out.println(countryName + ": " + quakeCount);
+		}
 	}
 	
 	
