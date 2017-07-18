@@ -46,8 +46,8 @@ public class EarthquakeCityMap extends PApplet {
 	private String earthquakesURL = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.atom";
 	
 	// The files containing city names and info and country names and info
-	private String cityFile = "city-data.json";
-	private String countryFile = "countries.geo.json";
+	private String cityFile = "../data/city-data.json";
+	private String countryFile = "../data/countries.geo.json";
 	
 	// The map
 	private UnfoldingMap map;
@@ -56,7 +56,6 @@ public class EarthquakeCityMap extends PApplet {
 	private List<Marker> cityMarkers;
 	// Markers for each earthquake
 	private List<Marker> quakeMarkers;
-
 	// A List of country markers
 	private List<Marker> countryMarkers;
 	
@@ -70,17 +69,17 @@ public class EarthquakeCityMap extends PApplet {
 		else {
 			map = new UnfoldingMap(this, 200, 50, 650, 600, new Microsoft.RoadProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
-		    //earthquakesURL = "2.5_week.atom";
+		    earthquakesURL = "../data/2.5_week.atom";
 		}
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
-		//earthquakesURL = "test1.atom";
-		//earthquakesURL = "test2.atom";
+		earthquakesURL = "../data/test1.atom";
+		//earthquakesURL = "../data/test2.atom";
 		
 		// WHEN TAKING THIS QUIZ: Uncomment the next line
-		//earthquakesURL = "quiz1.atom";
+		//earthquakesURL = "../data/quiz1.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -89,6 +88,7 @@ public class EarthquakeCityMap extends PApplet {
 		countryMarkers = MapUtils.createSimpleMarkers(countries);
 		
 		//     STEP 2: read in city data
+		// MAAT NOTE: COULD IT BE IMPLEMENTED SIMILAR TO STEP 1?
 		List<Feature> cities = GeoJSONReader.loadData(this, cityFile);
 		cityMarkers = new ArrayList<Marker>();
 		for(Feature city : cities) {
@@ -123,9 +123,9 @@ public class EarthquakeCityMap extends PApplet {
 	
 	
 	public void draw() {
-		background(0);
-		map.draw();
-		addKey();
+//		background(0);
+//		map.draw();
+//		addKey();
 		
 	}
 	
@@ -154,19 +154,18 @@ public class EarthquakeCityMap extends PApplet {
 		text("Below 4.0", 75, 225);
 	}
 
-	
-	
 	// Checks whether this quake occurred on land.  If it did, it sets the 
 	// "country" property of its PointFeature to the country where it occurred
 	// and returns true.  Notice that the helper method isInCountry will
 	// set this "country" property already.  Otherwise it returns false.
 	private boolean isLand(PointFeature earthquake) {
-		
-		// IMPLEMENT THIS: loop over all countries to check if location is in any of them
-		
-		// TODO: Implement this method using the helper method isInCountry
-		
-		// not inside any country
+//		System.out.println("earthquakeMarker: " + earthquake.getProperties().toString());
+		for(Marker country : countryMarkers){
+			if(isInCountry(earthquake,country)){
+				earthquake.addProperty("country", country.getProperty("name"));
+				return true;
+			}
+		}
 		return false;
 	}
 	
