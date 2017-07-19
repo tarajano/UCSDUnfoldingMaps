@@ -11,6 +11,8 @@ import processing.core.PGraphics;
  */
 public class LandQuakeMarker extends EarthquakeMarker {
 	
+	private int MARKER_SIZE_INCREASE = 2;
+	private int MARKER_SIZE = (int) (this.radius * MARKER_SIZE_INCREASE);
 	
 	public LandQuakeMarker(PointFeature quake) {
 		
@@ -33,6 +35,12 @@ public class LandQuakeMarker extends EarthquakeMarker {
 		// and how it is set in the EarthquakeMarker constructor
 		
 		// TODO: Implement this method
+		// Save previous drawing style
+		pg.pushStyle();
+		pg.stroke(213, 216, 220);
+		pg.ellipse(x, y, MARKER_SIZE, MARKER_SIZE);
+		// Restore previous drawing style
+		pg.popStyle();
 		
 	}
 	

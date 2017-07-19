@@ -11,6 +11,9 @@ import processing.core.PGraphics;
  */
 public class OceanQuakeMarker extends EarthquakeMarker {
 	
+	private int MARKER_SIZE_INCREASE = 2;
+	private int MARKER_SIZE = (int) (this.radius * MARKER_SIZE_INCREASE);
+	
 	public OceanQuakeMarker(PointFeature quake) {
 		super(quake);
 		
@@ -29,7 +32,11 @@ public class OceanQuakeMarker extends EarthquakeMarker {
 		// HINT: Notice the radius variable in the EarthquakeMarker class
 		// and how it is set in the EarthquakeMarker constructor
 		
-		// TODO: Implement this method
+		pg.pushStyle();
+		pg.stroke(213, 216, 220);
+		pg.rect(x, y, MARKER_SIZE, MARKER_SIZE);
+		// Restore previous drawing style
+		pg.popStyle();
 		
 	}
 	
