@@ -36,7 +36,13 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	/** Greater than or equal to this threshold is a deep depth */
 	public static final float THRESHOLD_DEEP = 300;
 
-	// ADD constants for colors
+	// Constants for quakes depth colors
+	// shallow quake
+	// int shallowQuakeColor = 16762;
+	// intermediate quake
+	// int intermediateQuakeColor = 19740;
+	// deep quake
+	// int deepQuakeColor = 16719;
 
 	
 	// abstract method implemented in derived classes
@@ -79,7 +85,20 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	// But this is up to you, of course.
 	// You might find the getters below helpful.
 	private void colorDetermine(PGraphics pg) {
-		//TODO: Implement this method
+		float depth = this.getDepth();
+		pg.noStroke();
+		
+		if( depth <= THRESHOLD_INTERMEDIATE){
+			// pg.fill(shallowQuakeColor);
+			pg.fill(200,200,30);
+		}else if(depth > THRESHOLD_INTERMEDIATE & depth <= THRESHOLD_DEEP){
+			// pg.fill(intermediateQuakeColor);
+			pg.fill(30,130,180);
+		}else{
+			// pg.fill(deepQuakeColor);
+			pg.fill(230,70,10);
+		}
+		
 	}
 	
 	
