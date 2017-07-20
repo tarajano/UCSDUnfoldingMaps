@@ -16,7 +16,6 @@ public class OceanQuakeMarker extends EarthquakeMarker {
 	
 	public OceanQuakeMarker(PointFeature quake) {
 		super(quake);
-		
 		// setting field in earthquake marker
 		isOnLand = false;
 	}
@@ -33,7 +32,8 @@ public class OceanQuakeMarker extends EarthquakeMarker {
 		// and how it is set in the EarthquakeMarker constructor
 		
 		pg.pushStyle();
-		pg.stroke(213, 216, 220);
+		//pg.stroke(213, 216, 220);
+		pg.noStroke();
 		pg.rect(x, y, MARKER_SIZE, MARKER_SIZE);
 		// Restore previous drawing style
 		pg.popStyle();

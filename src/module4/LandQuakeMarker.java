@@ -37,7 +37,8 @@ public class LandQuakeMarker extends EarthquakeMarker {
 		// TODO: Implement this method
 		// Save previous drawing style
 		pg.pushStyle();
-		pg.stroke(213, 216, 220);
+		//pg.stroke(213, 216, 220);
+		pg.noStroke();
 		pg.ellipse(x, y, MARKER_SIZE, MARKER_SIZE);
 		// Restore previous drawing style
 		pg.popStyle();
