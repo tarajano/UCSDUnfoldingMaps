@@ -126,7 +126,7 @@ public class EarthquakeCityMap extends PApplet {
 	public void draw() {
 		background(0);
 		map.draw();
-//		addKey();
+		addKey();
 		
 	}
 	
@@ -141,18 +141,37 @@ public class EarthquakeCityMap extends PApplet {
 		textAlign(LEFT, CENTER);
 		textSize(12);
 		text("Earthquake Key", 50, 75);
+
+		textSize(11);
+		text("Size ~ Magnitude", 50, 100);
 		
-		fill(color(255, 0, 0));
-		ellipse(50, 125, 15, 15);
+		// Depth
 		fill(color(255, 255, 0));
-		ellipse(50, 175, 10, 10);
+		ellipse(50, 120, 10, 10);
+		fill(color(255, 0, 0));
+		ellipse(50, 140, 10, 10);
 		fill(color(0, 0, 255));
-		ellipse(50, 225, 5, 5);
-		
+		ellipse(50, 160, 10, 10);
 		fill(0, 0, 0);
-		text("5.0+ Magnitude", 75, 125);
-		text("4.0+ Magnitude", 75, 175);
-		text("Below 4.0", 75, 225);
+		text("Shallow ", 75, 120);
+		text("Intermediate", 75, 140);
+		text("Deep", 75, 160);
+		// Location
+		fill(255, 250, 240);
+		ellipse(50, 180, 10, 10);
+		fill(255, 250, 240);
+		rect(45, 195, 10, 10);
+		fill(255, 250, 240);
+		triangle(
+				50, 215,
+				57, 225,
+				43, 225); //TODO finsih triangle 
+		fill(0, 0, 0);
+		text("Land", 75, 180);
+		text("Ocean", 75, 200);
+		text("City", 75, 220);
+		
+		
 	}
 
 	// Checks whether this quake occurred on land.  If it did, it sets the 
