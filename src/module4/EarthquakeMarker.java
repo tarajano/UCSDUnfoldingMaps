@@ -58,7 +58,7 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 		float magnitude = Float.parseFloat(properties.get("magnitude").toString());
 		properties.put("radius", 2*magnitude );
 		setProperties(properties);
-		this.radius = 1.75f*getMagnitude();
+		this.radius = (float) Math.pow(getMagnitude(),1.2); // Variant of using Math.pow() introduced by MAAT
 	}
 	
 
@@ -86,19 +86,17 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	// You might find the getters below helpful.
 	private void colorDetermine(PGraphics pg) {
 		float depth = this.getDepth();
-		pg.noStroke();
 		
 		if( depth <= THRESHOLD_INTERMEDIATE){
 			// pg.fill(shallowQuakeColor);
-			pg.fill(200,200,30);
+			pg.fill(200,200,30); // yellow
 		}else if(depth > THRESHOLD_INTERMEDIATE & depth <= THRESHOLD_DEEP){
 			// pg.fill(intermediateQuakeColor);
-			pg.fill(30,130,180);
+			pg.fill(30,130,180);  // blue
 		}else{
 			// pg.fill(deepQuakeColor);
-			pg.fill(230,70,10);
+			pg.fill(230,70,10); // red
 		}
-		
 	}
 	
 	

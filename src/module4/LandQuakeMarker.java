@@ -15,10 +15,7 @@ public class LandQuakeMarker extends EarthquakeMarker {
 	private int MARKER_SIZE = (int) (this.radius * MARKER_SIZE_INCREASE);
 	
 	public LandQuakeMarker(PointFeature quake) {
-		
-		// calling EarthquakeMarker constructor
 		super(quake);
-		
 		// setting field in earthquake marker
 		isOnLand = true;
 	}
