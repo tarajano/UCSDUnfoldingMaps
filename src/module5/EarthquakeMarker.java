@@ -1,6 +1,10 @@
 package module5;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.fhpotsdam.unfolding.data.PointFeature;
+import de.fhpotsdam.unfolding.marker.Marker;
 import processing.core.PGraphics;
 
 /** Implements a visual marker for earthquakes on an earthquake map
@@ -105,7 +109,22 @@ public abstract class EarthquakeMarker extends CommonMarker
 		pg.text(quakeTitle, x + positionShift, y);
 		pg.popStyle();
 	}
-
+	
+	
+	public List<Marker> getThreatenedCities(List<Marker> cities) {
+		List<Marker> citiesThreatened = new ArrayList<Marker>();
+		
+		for(Marker c: cities) {
+			CityMarker city = (CityMarker) c;
+			double quakeToCityDistance = this.getDistanceTo(city.getLocation());
+			//System.out.println("-- " + city.getProperties().toString() +  " dist to quake: " + quakeToCityDistance);
+			if (quakeToCityDistance <= this.threatCircle()) {
+				System.out.println("---   getThreatenedCity: " +  city.getProperties().toString() );
+				citiesThreatened.add(city);
+			}
+		}
+		return citiesThreatened;
+	}
 	
 	/**
 	 * Return the "threat circle" radius, or distance up to 
@@ -115,7 +134,7 @@ public abstract class EarthquakeMarker extends CommonMarker
 	 *  or predictive applications.
 	 */
 	public double threatCircle() {	
-		double miles = 20.0f * Math.pow(1.8, 2*getMagnitude()-5);
+		double miles = 20.0f * Math.pow(1.8, 3*getMagnitude()-5);
 		double km = (miles * kmPerMile);
 		return km;
 	}

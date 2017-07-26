@@ -182,7 +182,14 @@ public class EarthquakeCityMap extends PApplet {
 				if(lastClicked.isQuake()){
 					// display only cities affected (within threadCircle)
 					//System.out.println("  It's a quake!");
-					
+					EarthquakeMarker quake = (EarthquakeMarker) lastClicked;
+					List<Marker> citiesThreatened = quake.getThreatenedCities(cityMarkers);
+					if (!citiesThreatened.isEmpty()) {
+						hideMarkers(ListUtils.union(quakeMarkers, cityMarkers));
+						lastClicked.setHidden(false);
+						unhideArgsMarkers(citiesThreatened);
+					}
+				
 				}
 				else{
 					// then its a city
@@ -218,6 +225,20 @@ public class EarthquakeCityMap extends PApplet {
 		}
 			
 		for(Marker marker : cityMarkers) {
+			marker.setHidden(false);
+		}
+	}
+
+	// loop over and hide all markers
+	private void hideMarkers(List<Marker> markers) {
+		for(Marker marker : markers) {
+			marker.setHidden(true);
+		}
+	}
+	
+	// loop over and unhide provided
+	private void unhideArgsMarkers(List<Marker> markers) {
+		for(Marker marker : markers) {
 			marker.setHidden(false);
 		}
 	}
