@@ -2,6 +2,7 @@ package module5;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections4.ListUtils;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
@@ -149,7 +150,7 @@ public class EarthquakeCityMap extends PApplet {
 			if( m.isInside( map, mouseX, mouseY) ){
 				m.setSelected(true);
 				lastSelected = (CommonMarker) m;
-				System.out.println("lastSelected: " + lastSelected.getProperties().toString());
+				//System.out.println("lastSelected: " + lastSelected.getProperties().toString());
 				return;
 			}
 		}
@@ -166,8 +167,42 @@ public class EarthquakeCityMap extends PApplet {
 		// TODO: Implement this method
 		// Hint: You probably want a helper method or two to keep this code
 		// from getting too long/disorganized
+		if (lastClicked != null) {
+			unhideMarkers();
+		}
+		else {
+			// TODO 
+			// must determine which marker is being selected (if any) 
+			// and hide / display other markers so that ...
+			
+			List<Marker> markersCitiesQuakes = ListUtils.union(quakeMarkers, cityMarkers);
+			lastClicked = selectMarkerIfClicked(markersCitiesQuakes);
+			if(lastClicked == null) {
+				System.out.println("lastClicked marker: none");
+			}
+			else {
+				System.out.println("lastClicked marker: " + lastClicked.getProperties().toString());
+			}
+			
+			// hide all outside the threadCircle()
+			lastClicked = null;
+		}
 	}
 	
+	private CommonMarker selectMarkerIfClicked( List<Marker> markers)
+	{
+		CommonMarker markerNull = null;
+		
+		for(Marker m: markers){
+			CommonMarker cm = (CommonMarker) m;
+			if( cm.isInside( map, mouseX, mouseY) ){
+				cm.setClicked(true);
+				lastClicked = cm;
+				return lastClicked;
+			}
+		}
+		return markerNull;
+	}
 	
 	// loop over and unhide all markers
 	private void unhideMarkers() {
