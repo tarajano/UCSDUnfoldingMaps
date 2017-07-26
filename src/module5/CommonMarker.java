@@ -33,6 +33,15 @@ public abstract class CommonMarker extends SimplePointMarker {
 		clicked = state;
 	}
 	
+	/**
+	 * Checks if the CommonMarker object is a quake or a city.
+	 */
+	public boolean isQuake(){
+		if(this instanceof EarthquakeMarker) 
+			return true;
+		return false;
+	}
+	
 	// Common piece of drawing method for markers; 
 	// Note that you should implement this by making calls 
 	// drawMarker and showTitle, which are abstract methods 

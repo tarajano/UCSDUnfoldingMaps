@@ -177,11 +177,18 @@ public class EarthquakeCityMap extends PApplet {
 			
 			List<Marker> markersCitiesQuakes = ListUtils.union(quakeMarkers, cityMarkers);
 			lastClicked = selectMarkerIfClicked(markersCitiesQuakes);
-			if(lastClicked == null) {
-				System.out.println("lastClicked marker: none");
-			}
-			else {
+			if(lastClicked != null) {
 				System.out.println("lastClicked marker: " + lastClicked.getProperties().toString());
+				if(lastClicked.isQuake()){
+					// display only cities affected (within threadCircle)
+					//System.out.println("  It's a quake!");
+					
+				}
+				else{
+					// then its a city
+					// display only quakes that had affected the city
+					//System.out.println("  It's a city!");
+				}
 			}
 			
 			// hide all outside the threadCircle()
