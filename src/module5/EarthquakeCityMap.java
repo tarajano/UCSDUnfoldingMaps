@@ -17,6 +17,7 @@ import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import parsing.ParseFeed;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
@@ -164,42 +165,34 @@ public class EarthquakeCityMap extends PApplet {
 	@Override
 	public void mouseClicked()
 	{
-		// TODO: Implement this method
-		// Hint: You probably want a helper method or two to keep this code
-		// from getting too long/disorganized
-		if (lastClicked != null) {
-			unhideMarkers();
+		List<Marker> markersCitiesQuakes = ListUtils.union(quakeMarkers, cityMarkers);
+
+		lastClicked = selectMarkerIfClicked(markersCitiesQuakes);
+		
+		if (lastClicked == null) {
+			unhideMarkers(markersCitiesQuakes);
 		}
-		else {
-			// TODO 
-			// must determine which marker is being selected (if any) 
-			// and hide / display other markers so that ...
-			
-			List<Marker> markersCitiesQuakes = ListUtils.union(quakeMarkers, cityMarkers);
-			lastClicked = selectMarkerIfClicked(markersCitiesQuakes);
-			if(lastClicked != null) {
-				System.out.println("lastClicked marker: " + lastClicked.getProperties().toString());
-				if(lastClicked.isQuake()){
-					// display only cities affected (within threadCircle)
-					//System.out.println("  It's a quake!");
-					EarthquakeMarker quake = (EarthquakeMarker) lastClicked;
-					List<Marker> citiesThreatened = quake.getThreatenedCities(cityMarkers);
-					if (!citiesThreatened.isEmpty()) {
-						hideMarkers(ListUtils.union(quakeMarkers, cityMarkers));
-						lastClicked.setHidden(false);
-						unhideArgsMarkers(citiesThreatened);
-					}
-				
-				}
-				else{
-					// then its a city
-					// display only quakes that had affected the city
-					//System.out.println("  It's a city!");
-				}
+		else { 
+			if(lastClicked.isQuake()){
+				EarthquakeMarker quake = (EarthquakeMarker) lastClicked;
+				List<Marker> citiesThreatened = quake.getThreatenedCities(cityMarkers);
+//				drawQuakesRadius(quake);
+				displayingMarkersNearbyLastClicked(lastClicked, citiesThreatened);
 			}
-			
-			// hide all outside the threadCircle()
-			lastClicked = null;
+			else {
+				CityMarker city = (CityMarker) lastClicked;
+				List<Marker> threateningQuakes = city.getThreateningQuakes(quakeMarkers);
+				displayingMarkersNearbyLastClicked(lastClicked, threateningQuakes);
+				
+			}
+		}
+	}
+	
+	private void displayingMarkersNearbyLastClicked(CommonMarker lastClick, List<Marker> markers) {
+		if (!markers.isEmpty()) {
+			hideMarkers(ListUtils.union(quakeMarkers, cityMarkers));
+			lastClick.setHidden(false);
+			unhideMarkers(markers);
 		}
 	}
 	
@@ -219,12 +212,9 @@ public class EarthquakeCityMap extends PApplet {
 	}
 	
 	// loop over and unhide all markers
-	private void unhideMarkers() {
-		for(Marker marker : quakeMarkers) {
-			marker.setHidden(false);
-		}
-			
-		for(Marker marker : cityMarkers) {
+	private void unhideMarkers(List<Marker> markers) {
+		System.out.println("unhiding markers");
+		for(Marker marker : markers) {
 			marker.setHidden(false);
 		}
 	}
@@ -236,12 +226,16 @@ public class EarthquakeCityMap extends PApplet {
 		}
 	}
 	
-	// loop over and unhide provided
-	private void unhideArgsMarkers(List<Marker> markers) {
-		for(Marker marker : markers) {
-			marker.setHidden(false);
-		}
-	}
+//	private void drawQuakesRadius(EarthquakeMarker quake) {
+//		float x = quake.getLocation().x;
+//		float y = quake.getLocation().y;
+//		float radius = quake.getRadius();
+//		pushStyle();
+//		noFill();
+//		stroke(153);
+//		ellipse(x, y, radius, radius);
+//		popStyle();
+//	}
 	
 	// helper method to draw key in GUI
 	private void addKey() {	

@@ -110,16 +110,16 @@ public abstract class EarthquakeMarker extends CommonMarker
 		pg.popStyle();
 	}
 	
-	
+	/*
+	 * Returns the cities within a threatCircle() distance from the EarthQuakeMarker.
+	 */
 	public List<Marker> getThreatenedCities(List<Marker> cities) {
 		List<Marker> citiesThreatened = new ArrayList<Marker>();
 		
 		for(Marker c: cities) {
 			CityMarker city = (CityMarker) c;
 			double quakeToCityDistance = this.getDistanceTo(city.getLocation());
-			//System.out.println("-- " + city.getProperties().toString() +  " dist to quake: " + quakeToCityDistance);
 			if (quakeToCityDistance <= this.threatCircle()) {
-				System.out.println("---   getThreatenedCity: " +  city.getProperties().toString() );
 				citiesThreatened.add(city);
 			}
 		}
@@ -134,7 +134,7 @@ public abstract class EarthquakeMarker extends CommonMarker
 	 *  or predictive applications.
 	 */
 	public double threatCircle() {	
-		double miles = 20.0f * Math.pow(1.8, 3*getMagnitude()-5);
+		double miles = 20.0f * Math.pow(1.8, 2.3*getMagnitude()-5); // TODO restore to: 2*getMagnitude()-5
 		double km = (miles * kmPerMile);
 		return km;
 	}

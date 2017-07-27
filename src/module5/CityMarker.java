@@ -1,8 +1,12 @@
 package module5;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.geo.Location;
+import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -64,7 +68,20 @@ public class CityMarker extends CommonMarker {
 		pg.popStyle();
 	}
 	
-	
+	/*
+	 * Returns the quakes within a threatCircle() distance from the cityMarker.
+	 */
+	public List<Marker> getThreateningQuakes(List<Marker> quakes) {
+		List<Marker> threateningQuakes = new ArrayList<Marker>();
+		for(Marker q: quakes) {
+			EarthquakeMarker quake = (EarthquakeMarker) q;
+			double quakeToCityDistance = this.getDistanceTo(quake.getLocation());
+			if (quakeToCityDistance <= quake.threatCircle()) {
+				threateningQuakes.add(quake);
+			}
+		}
+		return threateningQuakes;
+	}
 	
 	/* Local getters for some city properties.  
 	 */
