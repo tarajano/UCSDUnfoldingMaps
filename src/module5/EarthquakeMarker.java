@@ -71,6 +71,8 @@ public abstract class EarthquakeMarker extends CommonMarker
 		// call abstract method implemented in child class to draw marker shape
 		drawEarthquake(pg, x, y);
 		
+		drawThreadCircle(pg, x, y);
+		
 		// IMPLEMENT: add X over marker if within past day		
 		String age = getStringProperty("age");
 		if ("Past Hour".equals(age) || "Past Day".equals(age)) {
@@ -91,6 +93,22 @@ public abstract class EarthquakeMarker extends CommonMarker
 		// reset to previous styling
 		pg.popStyle();
 		
+	}
+	
+	void drawThreadCircle(PGraphics pg, float x, float y) {
+		pg.pushStyle();
+		float threatCircle = (float) this.threatCircle();
+		if (this.isSelected()) {
+			pg.noFill();
+			pg.stroke(153);
+			pg.ellipse(x, y, threatCircle, threatCircle);
+			System.out.println(" threat circle: " + this.threatCircle() + " Km") ;
+		} else {
+//			pg.noStroke();
+//			pg.noFill();
+//			pg.ellipse(x, y, threatCircle, threatCircle);
+		}
+		pg.popStyle();
 	}
 
 	/** Show the title of the earthquake if this marker is selected */
@@ -134,7 +152,7 @@ public abstract class EarthquakeMarker extends CommonMarker
 	 *  or predictive applications.
 	 */
 	public double threatCircle() {	
-		double miles = 20.0f * Math.pow(1.8, 2.3*getMagnitude()-5); // TODO restore to: 2*getMagnitude()-5
+		double miles = 20.0f * Math.pow(1.8, 2*getMagnitude()-5);
 		double km = (miles * kmPerMile);
 		return km;
 	}

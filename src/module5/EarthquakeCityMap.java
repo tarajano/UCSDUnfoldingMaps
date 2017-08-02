@@ -176,14 +176,13 @@ public class EarthquakeCityMap extends PApplet {
 			if(lastClicked.isQuake()){
 				EarthquakeMarker quake = (EarthquakeMarker) lastClicked;
 				List<Marker> citiesThreatened = quake.getThreatenedCities(cityMarkers);
-//				drawQuakesRadius(quake);
 				displayingMarkersNearbyLastClicked(lastClicked, citiesThreatened);
+				System.out.println(" threatening circle: " + quake.threatCircle() + " Km") ;
 			}
 			else {
 				CityMarker city = (CityMarker) lastClicked;
 				List<Marker> threateningQuakes = city.getThreateningQuakes(quakeMarkers);
 				displayingMarkersNearbyLastClicked(lastClicked, threateningQuakes);
-				
 			}
 		}
 	}
@@ -225,17 +224,6 @@ public class EarthquakeCityMap extends PApplet {
 			marker.setHidden(true);
 		}
 	}
-	
-//	private void drawQuakesRadius(EarthquakeMarker quake) {
-//		float x = quake.getLocation().x;
-//		float y = quake.getLocation().y;
-//		float radius = quake.getRadius();
-//		pushStyle();
-//		noFill();
-//		stroke(153);
-//		ellipse(x, y, radius, radius);
-//		popStyle();
-//	}
 	
 	// helper method to draw key in GUI
 	private void addKey() {	
