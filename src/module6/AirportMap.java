@@ -36,7 +36,7 @@ public class AirportMap extends PApplet {
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
 		// get features from airport data
-		List<PointFeature> features = ParseFeed.parseAirports(this, "airports.dat");
+		List<PointFeature> features = ParseFeed.parseAirports(this, "../data/airports.dat");
 		
 		// list for markers, hashmap for quicker access when matching with routes
 		airportList = new ArrayList<Marker>();
