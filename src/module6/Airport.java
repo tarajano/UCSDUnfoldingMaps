@@ -37,9 +37,9 @@ public class Airport{
 		this.latitude = loc.getLat();
 		this.longitude  = loc.getLon();
 		this.name = (String) properties.get("name");
-		this.city = (String) properties.get("city");
+		this.city = ((String) properties.get("city")).replace("\"", "");
 		this.country = (String) properties.get("country");
-		this.code3 = (String) properties.get("code");;
+		this.code3 = (String) properties.get("code");
 		this.altitude =  Float.parseFloat( (String) properties.get("altitude") ) ;
 	}
 

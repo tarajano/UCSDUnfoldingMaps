@@ -16,26 +16,45 @@ public class TesterClass{
 		
 		String path = "/Users/tarajano/eclipse-workspace/UCSDUnfoldingMaps/data/airports.dat";
 		
-		// Creating Airport objects from airports.dat file
-		AirportListMaker lm = new AirportListMaker(path);
-		List<PointFeature> airportsLF = lm.getAirportsAsPointFeatureList();
-		List<Airport> airportsList = new ArrayList<Airport>();
-		for (PointFeature pf : airportsLF) {
-			//System.out.println(pf.getId() + " -- " + pf.getLocation() + " -- " + pf.getProperties().toString());
-			airportsList.add(new Airport(pf.getId(), pf.getLocation(), pf.getProperties()) );
-		}
-		
-		for (Airport airport : airportsList) {
-			System.out.println(airport.toString());
-		}
-		
 		// Testing FileIOParser
 		//FileIOParser fiop = new FileIOParser(path);
 		//ArrayList<String> fileContent = fiop.fileToArrayList();
 		//System.out.println(fileContent.toString());
 		
-		// TODO COMMIT
+		// Creating Airport objects from airports.dat file
+		List<Airport> airportsList = generateAirportsAsPointFeatureList(path);
 		
+		// Searching if 'city' exists in the list of airports.
+		// TODO
+		String targetCity = "Havana";
+		String airportCode = getCodeForTargetCityInAirportsList (targetCity, airportsList);
+		System.out.println("Code for airport in " + targetCity + ": " + airportCode);
+	}
+	
+	// Linear search of 'city'.
+	static private String getCodeForTargetCityInAirportsList (String targetCity, List<Airport> airportsList) {
+		
+		for (Airport airport: airportsList) {
+			if ( airport.getCity().equals(targetCity)) {
+				return airport.getCode3();
+			}
+		}
+		return null;
+	}
+	
+	
+	// Creating a list of Airport objects.
+	static private List<Airport> generateAirportsAsPointFeatureList (String path) {
+		
+		AirportListMaker lm = new AirportListMaker(path);
+		List<PointFeature> airportsLF = lm.getAirportsAsPointFeatureList();
+		List<Airport> airportsList = new ArrayList<Airport>();
+		
+		for (PointFeature pf : airportsLF) {
+			airportsList.add(new Airport(pf.getId(), pf.getLocation(), pf.getProperties()) );
+		}
+		
+		return airportsList;
 	}
 	
 	
