@@ -1,6 +1,7 @@
 package module6;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import processing.core.PApplet;
  * MOOC team
  *
  */
-public class Airport{
+public class Airport implements Comparable<Airport>{
 
 	private String id;
 	private Float latitude;
@@ -42,7 +43,30 @@ public class Airport{
 		this.code3 = (String) properties.get("code");
 		this.altitude =  Float.parseFloat( (String) properties.get("altitude") ) ;
 	}
-
+	 
+	
+	// IMPLEMENTING compareTo and Comparator
+	public int compareTo(Airport objectOther) {
+		
+		String objectThisStringProperty = this.getCity().toUpperCase();
+		String objectOtherStringProperty = objectOther.getCity().toUpperCase();
+		return objectThisStringProperty.compareTo(objectOtherStringProperty);
+		// Uncomment in case you are comparing int.
+		//return this.quantity - compareQuantity; //ascending order
+		//return compareQuantity - this.quantity; //descending order 
+	}
+	
+	public static Comparator<Airport> AirportCityComparator = new Comparator<Airport>() {
+	    public int compare(Airport objectOne, Airport objectTwo) {
+	      String objectOneStringProperty = objectOne.getCity().toUpperCase();
+	      String objectTwoStringProperty = objectTwo.getCity().toUpperCase();
+	      //ascending order
+	      return objectOneStringProperty.compareTo(objectTwoStringProperty);
+	      //descending order
+	      //return objectCityName2.compareTo(objectCityName1);
+	    }
+	};
+	
 	//toString
 	public String toString(){
 		String objectString =	"id: " + id + ", " + 

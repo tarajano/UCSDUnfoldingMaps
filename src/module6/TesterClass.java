@@ -2,6 +2,8 @@ package module6;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.data.PointFeature;
@@ -24,16 +26,23 @@ public class TesterClass{
 		// Creating Airport objects from airports.dat file
 		List<Airport> airportsList = generateAirportsAsPointFeatureList(path);
 		
-		// Searching if 'city' exists in the list of airports.
-		// TODO
-		String targetCity = "Havana";
-		String airportCode = getCodeForTargetCityInAirportsList (targetCity, airportsList);
-		System.out.println("Code for airport in " + targetCity + ": " + airportCode);
+		// Linear search for 'city' in the list of airports.
+//		String targetCity = "Havana";
+//		String airportCode = getCodeForTargetCityInAirportsList (targetCity, airportsList);
+//		System.out.println("Code for airport in " + targetCity + ": " + airportCode);
+		
+		
+		// Sorting airports alphabetically by city name
+		Collections.sort(airportsList);
 	}
 	
+	
+	
+	// TODO Binary search for 'city' in the list of airports.
+	
+
 	// Linear search of 'city'.
 	static private String getCodeForTargetCityInAirportsList (String targetCity, List<Airport> airportsList) {
-		
 		for (Airport airport: airportsList) {
 			if ( airport.getCity().equals(targetCity)) {
 				return airport.getCode3();
