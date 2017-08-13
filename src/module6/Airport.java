@@ -47,7 +47,6 @@ public class Airport implements Comparable<Airport>{
 	
 	// IMPLEMENTING compareTo and Comparator
 	public int compareTo(Airport objectOther) {
-		
 		String objectThisStringProperty = this.getCity().toUpperCase();
 		String objectOtherStringProperty = objectOther.getCity().toUpperCase();
 		return objectThisStringProperty.compareTo(objectOtherStringProperty);

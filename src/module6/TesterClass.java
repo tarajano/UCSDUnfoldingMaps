@@ -27,22 +27,49 @@ public class TesterClass{
 		List<Airport> airportsList = generateAirportsAsPointFeatureList(path);
 		
 		// Linear search for 'city' in the list of airports.
-//		String targetCity = "Havana";
-//		String airportCode = getCodeForTargetCityInAirportsList (targetCity, airportsList);
-//		System.out.println("Code for airport in " + targetCity + ": " + airportCode);
+		String targetCity = "Havana";
+		String airportCode = getCodeForTargetCity(targetCity, airportsList);
+		System.out.println("Code for airport in " + targetCity + ": " + airportCode);
 		
-		
+
+		// Binary search for 'city' in the list of airports.
 		// Sorting airports alphabetically by city name
+//		String targetCity = "Havana";
 		Collections.sort(airportsList);
+		airportCode = getCodeForTargetCityBinarySearch(targetCity, airportsList);
+		System.out.println("Code for airport in " + targetCity + ": " + airportCode);		
+		
 	}
 	
 	
-	
-	// TODO Binary search for 'city' in the list of airports.
+	// Binary search for 'city'.
+	// Must provide a list ordered alphabetically and ascending on the relevant property (city).
+	static private String getCodeForTargetCityBinarySearch(String targetString, List<Airport> list) {
+		int bottom = 0;
+		int top = list.size();
+		
+		while (bottom <= top) {
+			int middle = (bottom + top)/2;
+			
+			String currentString = list.get(middle).getCity(); 
+			int stringCompareResult = currentString.compareTo(targetString);
+			
+			if( stringCompareResult == 0 ) {
+				return list.get(middle).getCode3();
+			} else if ( stringCompareResult < 0 ) {
+				bottom = middle + 1;
+			} else {
+				top  = middle - 1;
+			}
+		}
+
+		return null;
+	}
 	
 
-	// Linear search of 'city'.
-	static private String getCodeForTargetCityInAirportsList (String targetCity, List<Airport> airportsList) {
+	// Linear search for 'city'.
+	static private String getCodeForTargetCity (String targetCity, List<Airport> airportsList) {
+		int rounds = 0;
 		for (Airport airport: airportsList) {
 			if ( airport.getCity().equals(targetCity)) {
 				return airport.getCode3();
