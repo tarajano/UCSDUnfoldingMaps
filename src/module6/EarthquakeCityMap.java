@@ -2,6 +2,7 @@ package module6;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -47,8 +48,8 @@ public class EarthquakeCityMap extends PApplet {
 	private String earthquakesURL = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.atom";
 	
 	// The files containing city names and info and country names and info
-	private String cityFile = "city-data.json";
-	private String countryFile = "countries.geo.json";
+	private String cityFile = "../data/city-data.json";
+	private String countryFile = "../data/countries.geo.json";
 	
 	// The map
 	private UnfoldingMap map;
@@ -70,22 +71,22 @@ public class EarthquakeCityMap extends PApplet {
 		size(900, 700, OPENGL);
 		if (offline) {
 		    map = new UnfoldingMap(this, 200, 50, 650, 600, new MBTilesMapProvider(mbTilesString));
-		    earthquakesURL = "2.5_week.atom";  // The same feed, but saved August 7, 2015
+		    earthquakesURL = "../data/2.5_week.atom";  // The same feed, but saved August 7, 2015
 		}
 		else {
 			map = new UnfoldingMap(this, 200, 50, 650, 600, new Google.GoogleMapProvider());
 			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
-		    //earthquakesURL = "2.5_week.atom";
+		    earthquakesURL = "../data/2.5_week.atom";
 		}
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
-		//earthquakesURL = "test1.atom";
-		//earthquakesURL = "test2.atom";
+		//earthquakesURL = "../data/test1.atom";
+		//earthquakesURL = "../data/test2.atom";
 		
 		// Uncomment this line to take the quiz
-		//earthquakesURL = "quiz2.atom";
+		//earthquakesURL = "../data/quiz2.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -124,21 +125,43 @@ public class EarthquakeCityMap extends PApplet {
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
 	    
+	    sortAndPrint(5);
 	    
 	}  // End setup
 	
 	
 	public void draw() {
-		background(0);
-		map.draw();
-		addKey();
-		
+//		background(0);
+//		map.draw();
+//		addKey();
 	}
 	
 	
-	// TODO: Add the method:
-	//   private void sortAndPrint(int numToPrint)
-	// and then call that method from setUp
+	private void sortAndPrint(int numToPrint) {
+
+		int printCount = 1;
+
+		if (numToPrint < 0) {
+			System.out.println( "Argument to sortAndPrint() must be larger than zero." );
+			return;
+		}
+		
+		// Casting Markers into EarthquakeMarkers ()
+		List<EarthquakeMarker> eqmList = (List<EarthquakeMarker>)(List<?>) quakeMarkers;
+		Collections.sort(eqmList);
+		
+		if (numToPrint > eqmList.size()) {
+			numToPrint = eqmList.size();
+		}
+		
+		for (EarthquakeMarker eqm: eqmList) {
+			if(printCount++ <= numToPrint) {
+				System.out.println( eqm.toString()  );
+			}
+		}
+		
+	}
+	
 	
 	/** Event handler that gets called automatically when the 
 	 * mouse moves.
