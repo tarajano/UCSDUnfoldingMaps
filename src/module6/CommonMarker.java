@@ -43,6 +43,7 @@ public abstract class CommonMarker extends SimplePointMarker {
 		if (!hidden) {
 			drawMarker(pg, x, y);
 			if (selected) {
+				System.out.println("selected! should draw title");
 				showTitle(pg, x, y);
 			}
 		}

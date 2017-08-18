@@ -33,10 +33,22 @@ public class AirportMarker extends CommonMarker {
 	@Override
 	public void showTitle(PGraphics pg, float x, float y) {
 		 // show rectangle with title
-		
+		System.out.println("showTitle()");
+		int textSize = 12;
+		int positionShift = 5;
+		String title = "name: " + this.getProperty("name").toString() + " " + 
+				       "code: " + this.getProperty("code").toString() + " " +
+				 	   "city: " + this.getProperty("city").toString() + " " +
+				 	   "country: " + this.getProperty("country").toString()
+				 	   ; 
+		pg.pushStyle();
+		pg.noStroke();
+		pg.rect(x + positionShift, y - textSize, title.length() * (textSize/2), textSize + positionShift);
+		pg.textSize(textSize);
+		pg.fill(250,250,250);
+		pg.text(title, x + positionShift, y);
+		pg.popStyle();
 		// show routes
-		
-		
 	}
 	
 }
