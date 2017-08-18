@@ -101,37 +101,18 @@ public class AirportMap extends PApplet {
 	
 	
 	// Defining Interactive Behavior
-	
-	// TODO
-	// git commit.
 	// fix crash after clicking out of markers.
 	
-	@Override
-	public void mouseMoved()
-	{
-		// clear the last selection
-		if (lastSelected != null) {
-			lastSelected.setSelected(false);
-			lastSelected = null;
-		}
-//		selectMarkerIfClicked(airportList);
-	}
-	
-	private CommonMarker selectMarkerIfClicked(List<Marker> markers)
-	{
-		CommonMarker markerNull = null;
-		
-		for(Marker m: markers){
-			CommonMarker cm = (CommonMarker) m;
-			if( cm.isInside(map, mouseX, mouseY) ){
-				System.out.println("marker: " + m.getProperties().toString() + " clicked");
-				cm.setClicked(true);
-				lastClicked = cm;
-				return lastClicked;
-			}
-		}
-		return markerNull;
-	}
+//	@Override
+//	public void mouseMoved()
+//	{
+//		// clear the last selection
+//		if (lastSelected != null) {
+//			lastSelected.setSelected(false);
+//			lastSelected = null;
+//		}
+//		
+//	}
 	
 	@Override
 	public void mouseClicked()
@@ -139,23 +120,46 @@ public class AirportMap extends PApplet {
 		lastClicked = selectMarkerIfClicked(airportList);
 		
 		if (lastClicked == null) {
-			unhideMarkers(airportList);
-			lastClicked.setClicked(false);
-			lastClicked.setSelected(false);
+			unHideMarkers(airportList);
+			unSelectMarkers(airportList);
 		}
 		else {
+			System.out.println("lastClicked.isSelected(): " + lastClicked.isSelected() + " " + lastClicked.getProperties().toString());
 			hideMarkers(airportList);
 			lastClicked.setHidden(false);
-			lastClicked.setClicked(true);
-			lastClicked.setSelected(true); 
 		}
 	}
 	
+	private CommonMarker selectMarkerIfClicked(List<Marker> markers)
+	{
+		CommonMarker marker = null;
+		
+		for(Marker m: markers){
+			CommonMarker cm = (CommonMarker) m;
+			if( cm.isInside(map, mouseX, mouseY) ){
+				System.out.println("marker: " + m.getProperties().toString() + " clicked");
+				marker = cm;
+				marker.setClicked(true);
+				marker.setSelected(true); 
+				return marker;
+			}
+		}
+		System.out.println("no marker clicked");
+		return marker;
+	}
+	
 	// loop over and unhide all markers
-	private void unhideMarkers(List<Marker> markers) {
+	private void unHideMarkers(List<Marker> markers) {
 		System.out.println("unhiding markers");
 		for(Marker marker : markers) {
 			marker.setHidden(false);
+		}
+	}
+	
+	private void unSelectMarkers(List<Marker> markers) {
+		System.out.println("unhiding markers");
+		for(Marker marker : markers) {
+			marker.setSelected(false); 
 		}
 	}
 	

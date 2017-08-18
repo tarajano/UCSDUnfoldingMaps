@@ -24,10 +24,10 @@ public class AirportMarker extends CommonMarker {
 	
 	@Override
 	public void drawMarker(PGraphics pg, float x, float y) {
+		pg.pushStyle();
 		pg.fill(11);
 		pg.ellipse(x, y, 5, 5);
-		
-		
+		pg.popStyle();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class AirportMarker extends CommonMarker {
 		pg.noStroke();
 		pg.rect(x + positionShift, y - textSize, title.length() * (textSize/2), textSize + positionShift);
 		pg.textSize(textSize);
-		pg.fill(250,250,250);
+		pg.fill(20,20,20);
 		pg.text(title, x + positionShift, y);
 		pg.popStyle();
 		// show routes
