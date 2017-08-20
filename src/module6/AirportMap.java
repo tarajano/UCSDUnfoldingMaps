@@ -36,14 +36,14 @@ public class AirportMap extends PApplet {
 	
 	public void setup() {
 		// setting up PAppler
-		size(800,600, OPENGL);
+		size(1600,1200, OPENGL);
 		
 		// setting up map and default events
-		map = new UnfoldingMap(this, 50, 50, 750, 550);
+		map = new UnfoldingMap(this, 50, 50, 1550, 1150);
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
 		// get features from airport data
-		List<PointFeature> features = ParseFeed.parseAirports(this, "../data/airports.dat");
+		List<PointFeature> features = ParseFeed.parseAirports(this, "../data/airportsHead.dat");
 		
 		// list for markers, hashmap for quicker access when matching with routes
 		airportList = new ArrayList<Marker>();
@@ -91,11 +91,6 @@ public class AirportMap extends PApplet {
 			}
 		}
 		
-		// TODO
-		// git commit so far
-		// seems to be calculating correctly the routeTraffic
-		
-
 		routeList = setRouteTraffic(routeList);
 		map.addMarkers(routeList);
 		map.addMarkers(airportList);
@@ -103,8 +98,8 @@ public class AirportMap extends PApplet {
 	}
 	
 	public void draw() {
-		//background(0);
-		//map.draw();
+		background(0);
+		map.draw();
 		
 	}
 	
@@ -144,12 +139,21 @@ public class AirportMap extends PApplet {
 				traffic = routesTrafficHashMap.get(locsSwaped);
 			}
 			slm.setProperty("routeTraffic", traffic);
-			slm.setStrokeWeight(traffic);
+			slm.setStrokeWeight(5);
+		    slm.setColor( getColor(traffic) );
 			System.out.println(slm.getLocations() + " " + slm.getProperties() );
 			returnRouteList.add(slm);
 		}
 		
 		return returnRouteList;
+	}
+	
+	private int getColor(int traffic) {
+		int col = 0;
+		colorMode(RGB, 100);
+		int alpha = 100 - (100 - traffic);
+		col = color(200,0,0,alpha);
+		return col;
 	}
 	
 	private boolean checkLocationsPresenceInRoutesList(Location source, Location destination) {
@@ -175,11 +179,16 @@ public class AirportMap extends PApplet {
 		if (lastClicked == null) {
 			unHideMarkers(airportList);
 			unSelectMarkers(airportList);
+			// TODO
+			// unHideRoutes()
 		}
 		else {
 			System.out.println("lastClicked.isSelected(): " + lastClicked.isSelected() + " " + lastClicked.getProperties().toString());
 			hideMarkers(airportList);
 			lastClicked.setHidden(false);
+			// TODO 
+			// unHideMarkers() for airports connected to lastClicked
+			// hideRoutes()  NOT connected to lastClicked
 		}
 	}
 	
