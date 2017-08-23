@@ -33,7 +33,7 @@ public class AirportMarker extends CommonMarker {
 	@Override
 	public void showTitle(PGraphics pg, float x, float y) {
 		 // show rectangle with title
-		System.out.println("showTitle()");
+		// System.out.println("showTitle()");
 		int textSize = 12;
 		int positionShift = 5;
 		String title = "name: " + this.getProperty("name").toString() + " " + 

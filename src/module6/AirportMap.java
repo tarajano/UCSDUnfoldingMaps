@@ -2,6 +2,7 @@ package module6;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
 import de.fhpotsdam.unfolding.geo.Location;
 import parsing.ParseFeed;
 import processing.core.PApplet;
+import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
+
 
 /** An applet that shows airports (and routes)
  * on a world map.  
@@ -27,19 +30,25 @@ import processing.core.PApplet;
 public class AirportMap extends PApplet {
 	
 	UnfoldingMap map;
+	private boolean online = false;
 	private List<Marker> airportList;
 	List<Marker> routeList;
 	
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
 	
-	
 	public void setup() {
 		// setting up PAppler
-		size(1600,1200, OPENGL);
+		size(800,600, OPENGL);
 		
 		// setting up map and default events
-		map = new UnfoldingMap(this, 50, 50, 1550, 1150);
+		
+		if(online) {
+			map = new UnfoldingMap(this, 10, 10, 790, 590);
+		} else {
+			map = new UnfoldingMap(this, 50, 50, 1550, 1150, new MBTilesMapProvider("../data/blankLight-1-3.mbtiles"));
+		}
+		
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
 		// get features from airport data
@@ -52,13 +61,20 @@ public class AirportMap extends PApplet {
 		// create markers from features
 		for(PointFeature feature : features) {
 			AirportMarker m = new AirportMarker(feature);
-	
 			m.setRadius(10);
+			m.setId(feature.getId());
 			airportList.add(m);
-			
 			// put airport in hashmap with OpenFlights unique id for key
+//			System.out.println(	"feature.getId(): " + feature.getId() +
+//								" feature.getLocation(): " + feature.getLocation() + 
+//								" feature.getProperties(): " + feature.getProperties().toString()
+//								);
+//								feature.getId(): 95
+//								feature.getLocation(): (45.522, -75.564)
+//								feature.getProperties(): {country="Canada", altitude=211,
+//								code="YND", city="Gatineau", name="Gatineau"}
+
 			airports.put(Integer.parseInt(feature.getId()), feature.getLocation());
-		
 		}
 
 		// parse route data
@@ -95,12 +111,15 @@ public class AirportMap extends PApplet {
 		map.addMarkers(routeList);
 		map.addMarkers(airportList);
 		
+		
+		
+		
+		
 	}
 	
 	public void draw() {
 		background(0);
-		map.draw();
-		
+		map.draw();	
 	}
 	
 	private List<Marker> setRouteTraffic(List<Marker> rList) {
@@ -141,7 +160,7 @@ public class AirportMap extends PApplet {
 			slm.setProperty("routeTraffic", traffic);
 			slm.setStrokeWeight(5);
 		    slm.setColor( getColor(traffic) );
-			System.out.println(slm.getLocations() + " " + slm.getProperties() );
+			//System.out.println(slm.getLocations() + " " + slm.getProperties() );
 			returnRouteList.add(slm);
 		}
 		
@@ -183,14 +202,53 @@ public class AirportMap extends PApplet {
 			// unHideRoutes()
 		}
 		else {
-			System.out.println("lastClicked.isSelected(): " + lastClicked.isSelected() + " " + lastClicked.getProperties().toString());
 			hideMarkers(airportList);
 			lastClicked.setHidden(false);
-			// TODO 
-			// unHideMarkers() for airports connected to lastClicked
+			// unhide airports connected to lastClicked
+			unHideMarkers(getAirportsConnectedToLastClicked(lastClicked));
+			// TODO
 			// hideRoutes()  NOT connected to lastClicked
 		}
 	}
+	
+	
+	private List<Marker> getAirportsConnectedToLastClicked( CommonMarker last ) {
+		List<Marker> connectedAirports = null;
+		List<Integer> connectedAirportsIds = new ArrayList<Integer>();
+		
+		Marker lastClicked = (Marker) last;
+		Integer lastClickedId = Integer.parseInt((String)lastClicked.getId());
+		for(Marker route : routeList) {			
+			SimpleLinesMarker slmRoute = (SimpleLinesMarker) route;
+			Integer sourceId =  Integer.parseInt((String)slmRoute.getProperty("source"));
+			Integer destId =  Integer.parseInt((String)slmRoute.getProperty("destination"));
+			
+			if ( lastClickedId.equals(sourceId) ) {
+				connectedAirportsIds.add(destId);
+			} else if (lastClickedId.equals(destId)) {
+				connectedAirportsIds.add(sourceId);
+			}
+		}
+		
+		connectedAirports = getAirportsById(connectedAirportsIds);		
+		return connectedAirports;
+	}
+	
+	private List<Marker> getAirportsById(List<Integer> idList) {
+		List<Marker> airportsReturn = new ArrayList<Marker>();
+		// TODO make arg idList unique
+		for (Integer refereceId : idList) {
+			for (Marker airport : airportList) {
+				Integer targetId =  Integer.parseInt((String)airport.getId());
+				if ( targetId.equals(refereceId) ) {
+					System.out.println(" connection: " + airport.getProperties().toString());
+					airportsReturn.add(airport);
+				}
+			}
+		}
+		return airportsReturn;
+	}
+	
 	
 	private CommonMarker selectMarkerIfClicked(List<Marker> markers)
 	{
@@ -199,27 +257,27 @@ public class AirportMap extends PApplet {
 		for(Marker m: markers){
 			CommonMarker cm = (CommonMarker) m;
 			if( cm.isInside(map, mouseX, mouseY) ){
-				System.out.println("marker: " + m.getProperties().toString() + " clicked");
+				//System.out.println("marker: " + m.getProperties().toString() + " clicked");
 				marker = cm;
 				marker.setClicked(true);
 				marker.setSelected(true); 
 				return marker;
 			}
 		}
-		System.out.println("no marker clicked");
+		//System.out.println("no marker clicked");
 		return marker;
 	}
 	
 	// loop over and unhide all markers
 	private void unHideMarkers(List<Marker> markers) {
-		System.out.println("unhiding markers");
+		//System.out.println("unhiding markers");
 		for(Marker marker : markers) {
 			marker.setHidden(false);
-		}
+		} 
 	}
 	
 	private void unSelectMarkers(List<Marker> markers) {
-		System.out.println("unhiding markers");
+		//System.out.println("unhiding markers");
 		for(Marker marker : markers) {
 			marker.setSelected(false); 
 		}
