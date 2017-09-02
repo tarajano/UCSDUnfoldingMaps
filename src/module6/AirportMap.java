@@ -21,6 +21,7 @@ import de.fhpotsdam.unfolding.geo.Location;
 import parsing.ParseFeed;
 import processing.core.PApplet;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
+import de.fhpotsdam.unfolding.providers.Microsoft;
 
 
 /** An applet that shows airports (and routes)
@@ -32,7 +33,7 @@ import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
 public class AirportMap extends PApplet {
 	
 	UnfoldingMap map;
-	private boolean online = false;
+	private boolean online = true;
 	private List<Marker> airportList;
 	List<Marker> routeList;
 	
@@ -41,13 +42,13 @@ public class AirportMap extends PApplet {
 	
 	public void setup() {
 		// setting up PAppler
-		size(800,600, OPENGL);
+		size(900, 700, P3D);
 		
 		// setting up map and default events
 		if(online) {
-			map = new UnfoldingMap(this, 10, 10, 790, 590);
+			map = new UnfoldingMap(this, 50, 50, 650, 650, new Microsoft.RoadProvider());
 		} else {
-			map = new UnfoldingMap(this, 50, 50, 1550, 1150, new MBTilesMapProvider("../data/blankLight-1-3.mbtiles"));
+			map = new UnfoldingMap(this, 50, 50, 650, 650, new MBTilesMapProvider("../data/blankLight-1-3.mbtiles"));
 		}
 		
 		MapUtils.createDefaultEventDispatcher(this, map);
@@ -86,6 +87,8 @@ public class AirportMap extends PApplet {
 				route.addLocation(locDestination);
 				SimpleLinesMarker sl = new SimpleLinesMarker(route.getLocations(), route.getProperties());
 				sl.setProperty("midPointCoords", getRouteMidPoint(sl));
+				//sl.setProperty("screenXY", Arrays.asList(sl.getScreenPosition(map).x, sl.getScreenPosition(map).y));
+				//System.out.println( "sl.getScreenPosition(map): " + sl.getScreenPosition(map).toString() );
 				routeList.add(sl);
 			}
 		}
@@ -126,10 +129,18 @@ public class AirportMap extends PApplet {
 			lastClicked.setHidden(false);
 			displayMarkers(getAirportsConnectedToLastClicked(lastClicked));
 			displayMarkers(getRoutesConnectingAirport(lastClicked));
+			//printRoutesScreenPostions(getRoutesConnectingAirport(lastClicked));
 		}
 	}
 	
 	// Helper methods
+//	private void printRoutesScreenPostions(List<Marker> routeList) {
+//		for(Marker route : routeList) {
+//			SimpleLinesMarker slmRoute = (SimpleLinesMarker) route;
+//			System.out.println( "sl.getScreenPosition(map): " + slmRoute.getLocation().x + " " + slmRoute.getLocation().y );		
+//		}
+//	}
+	
 	private Location getRouteMidPoint(SimpleLinesMarker slm) {
 		Location midPoint = null;
 		List<Location> locs = slm.getLocations();
@@ -140,20 +151,21 @@ public class AirportMap extends PApplet {
 		float midX = (x1 + x2)/2;
 		float midY = (y1 + y2)/2;
 		midPoint = new Location(midX,midY);
+		//System.out.printf("slm properties: %s -- slm source/destination Loc: %s\n", slm.getProperties().toString(), slm.getLocations().toString()); 
 		return midPoint;
 	}
 	
 	private void printAirportMarkers() {
 		for (Marker m : airportList ) {
 			AirportMarker am = (AirportMarker) m;
-			System.out.println( m.getProperties().toString() + " routes: " + am.getRoutes().size() ) ; 
+			//System.out.println( m.getProperties().toString() + " routes: " + am.getRoutes().size() ) ; 
 		}
 	}
 	
 	private void printRouteProperties() {
 		for (Marker m : routeList) {
 			SimpleLinesMarker slm = (SimpleLinesMarker) m;
-			System.out.println( " route -- slm: " + slm.getProperties().toString()) ; 
+			//System.out.println( " route -- slm: " + slm.getProperties().toString()) ; 
 		}
 	}
 
@@ -162,7 +174,8 @@ public class AirportMap extends PApplet {
 		// has been computed. This method will remove route 'duplicates'.
 		// Duplicates are defined here as repeated source/destination 
 		// airport pairs, which happens due to 1) inbound/outbound flights
-		// and 2) multiple airlines covering the same route. 
+		// and 2) multiple airlines covering the same route.
+		// (Only one marker is needed to draw the route).
 		List<Marker> returnRouteList = new ArrayList<Marker>();
 		List<List<Location>> locsCheckList = new ArrayList<List<Location>>();
 		
@@ -272,7 +285,7 @@ public class AirportMap extends PApplet {
 	private int getColor(int traffic) {
 		int col = 0;
 		colorMode(RGB, 100);
-		int alpha = (int) (100 - (100 - Math.pow(traffic, 1.5)));
+		int alpha = (int) (100 - (100 - Math.pow(traffic, 2)));
 		col = color(255,0,0,alpha);
 		return col;
 	}
@@ -291,7 +304,7 @@ public class AirportMap extends PApplet {
 				connectingRoutes.add(route);
 			}			
 		}
-		System.out.println("airportId, connectingRoutes: " + airportId + " " + connectingRoutes.size());
+		//System.out.println("airportId, connectingRoutes: " + airportId + " " + connectingRoutes.size());
 		return connectingRoutes;
 	}
 	
