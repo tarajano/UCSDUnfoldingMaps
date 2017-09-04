@@ -44,7 +44,7 @@ public abstract class CommonMarker extends SimplePointMarker {
 			drawMarker(pg, x, y);
 			if (selected) {
 				showTitle(pg, x, y);
-				showRoutesDistances(pg, x, y);
+				//showRoutesDistances(pg, x, y);
 			}
 		}
 	}

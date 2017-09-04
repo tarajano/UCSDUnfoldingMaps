@@ -36,6 +36,7 @@ public class AirportMap extends PApplet {
 	private boolean online = true;
 	private List<Marker> airportList;
 	List<Marker> routeList;
+	List<Marker> routesMidPointMarkers;
 	
 //	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
@@ -86,22 +87,26 @@ public class AirportMap extends PApplet {
 				route.addLocation(locSource);
 				route.addLocation(locDestination);
 				SimpleLinesMarker sl = new SimpleLinesMarker(route.getLocations(), route.getProperties());
-				sl.setProperty("midPointCoords", getRouteMidPoint(sl));
+				sl.setProperty("midPointCoords", (Location) getRouteMidPoint(sl) );
 				//sl.setProperty("screenXY", Arrays.asList(sl.getScreenPosition(map).x, sl.getScreenPosition(map).y));
 				//System.out.println( "sl.getScreenPosition(map): " + sl.getScreenPosition(map).toString() );
+				sl.setProperty("routeID", routeList.size());
 				routeList.add(sl);
 			}
 		}
 		// Linking data
 		routeList = setRoutesTraffic(routeList);
-		//printRouteProperties();
 		routeList = deleteDuplicateRoutes(routeList);
 		routeList = setRoutesDistance(routeList);
 		routeList = setRoutesMidPoint(routeList);
+		routesMidPointMarkers = setMidPointMarkers(routeList);
+		printRouteProperties();
+
 		assignRoutesToAirports();
 //		printAirportMarkers();
 		map.addMarkers(routeList);
 		map.addMarkers(airportList);
+		map.addMarkers(routesMidPointMarkers);
 	}
 	
 	
@@ -120,7 +125,8 @@ public class AirportMap extends PApplet {
 		if (lastClicked == null) {
 			displayMarkers(airportList);
 			deselectMarkers(airportList);
-			displayMarkers(routeList); 
+			displayMarkers(routeList);
+			hideMarkers(routesMidPointMarkers);
 		} else {
 			// first hide all markers
 			hideMarkers(airportList);
@@ -129,6 +135,7 @@ public class AirportMap extends PApplet {
 			lastClicked.setHidden(false);
 			displayMarkers(getAirportsConnectedToLastClicked(lastClicked));
 			displayMarkers(getRoutesConnectingAirport(lastClicked));
+			displayMarkers( getMidPointsOfDisplayedRoutes(routeList, routesMidPointMarkers) );
 			//printRoutesScreenPostions(getRoutesConnectingAirport(lastClicked));
 		}
 	}
@@ -140,6 +147,17 @@ public class AirportMap extends PApplet {
 //			System.out.println( "sl.getScreenPosition(map): " + slmRoute.getLocation().x + " " + slmRoute.getLocation().y );		
 //		}
 //	}
+	
+	private List<Marker> setMidPointMarkers(List<Marker> routes) {
+		List<Marker> midPointMarkers = new ArrayList<Marker>();
+		for(Marker m : routes) {
+			SimpleLinesMarker slm = (SimpleLinesMarker) m;
+			Location loc = (Location) slm.getProperty("midPointCoords");
+			RouteMidPointMarker rm = new RouteMidPointMarker(loc, slm.getProperties());
+			midPointMarkers.add(rm);
+		}
+		return midPointMarkers;
+	}
 	
 	private Location getRouteMidPoint(SimpleLinesMarker slm) {
 		Location midPoint = null;
@@ -165,7 +183,7 @@ public class AirportMap extends PApplet {
 	private void printRouteProperties() {
 		for (Marker m : routeList) {
 			SimpleLinesMarker slm = (SimpleLinesMarker) m;
-			//System.out.println( " route -- slm: " + slm.getProperties().toString()) ; 
+			System.out.println( " route -- slm: " + slm.getProperties().toString()) ; 
 		}
 	}
 
@@ -290,6 +308,30 @@ public class AirportMap extends PApplet {
 		return col;
 	}
 
+	private List<Marker> getMidPointsOfDisplayedRoutes( List<Marker> routeList,  List<Marker> midPoints ) {
+		List<Marker> displayMidPoints = new ArrayList<Marker>();
+		List<Integer> routeIds = new ArrayList<Integer>();
+		Integer spmID = null;
+		
+		for(Marker route : routeList) {
+			SimpleLinesMarker slmRoute = (SimpleLinesMarker) route;
+			if (slmRoute.isHidden() == false) {
+				routeIds.add( (Integer) slmRoute.getProperty("routeID") );
+			}
+		}
+		
+		for (Marker m: midPoints) {
+			SimplePointMarker spm = (SimplePointMarker) m;
+			spmID = (Integer) spm.getProperty("routeID");
+			if ( routeIds.contains(spmID)) {
+				spm.setHidden(false);
+				displayMidPoints.add(spm);
+			}
+		} 
+		
+		return displayMidPoints;
+	}
+	
 	private List<Marker> getRoutesConnectingAirport( CommonMarker cmarker ) {
 		Marker airport = (Marker) cmarker;
 		List<Marker> connectingRoutes = new ArrayList<Marker>();
