@@ -49,43 +49,6 @@ public class RouteMidPointMarker extends CommonMarker {
 	}
 
 	@Override
-	public void showTitle(PGraphics pg, float x, float y) {
-		 // show rectangle with title
-//		int positionShift = 5;
-//		String title = "name: " + this.getProperty("name").toString() + " " + 
-//				       "code: " + this.getProperty("code").toString() + " " +
-//				 	   "city: " + this.getProperty("city").toString() + " " +
-//				 	   "country: " + this.getProperty("country").toString()
-//				 	   ; 
-//		pg.pushStyle();
-//		pg.noStroke(); 
-//		pg.rect(x + positionShift, y - textSize, title.length() * (textSize/2), textSize + positionShift);
-//		pg.textSize(textSize);
-//		pg.fill(20,20,20);
-//		pg.text(title, x + positionShift, y);
-//		pg.popStyle();
-		// show routes
-	}
-	
-	@Override
-	public void showRoutesDistances(PGraphics pg, float x, float y) {
-//		int radius = 10;
-//
-//		for(SimpleLinesMarker slm : this.routes) {
-//			pg.pushStyle();
-//			pg.fill(250,20,20);
-//			Location loc = (Location) slm.getProperty("midPointCoords");
-//			float xCoord = loc.getLat();
-//			float yCoord = loc.getLon();
-//			pg.ellipse(xCoord, yCoord, radius, radius);
-//			pg.popStyle();
-//			System.out.printf(	"Airport(%.2f,%.2f), MidPoint(%.2f,%.2f), MouseClicked(%.2f,%.2f)\n",
-//								this.getLocation().getLat(),this.getLocation().getLon(),
-//								xCoord, yCoord,
-//								x, y
-//							);
-//		}
-//		
-	}
+	public void showTitle(PGraphics pg, float x, float y) { } // not needed for this marker. maybe a design issue.
 	
 }

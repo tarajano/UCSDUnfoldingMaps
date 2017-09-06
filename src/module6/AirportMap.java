@@ -37,6 +37,7 @@ public class AirportMap extends PApplet {
 	private List<Marker> airportList;
 	List<Marker> routeList;
 	List<Marker> routesMidPointMarkers;
+	List<Marker> midPoints = new ArrayList<Marker>();
 	
 //	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
@@ -100,10 +101,10 @@ public class AirportMap extends PApplet {
 		routeList = setRoutesDistance(routeList);
 		routeList = setRoutesMidPoint(routeList);
 		routesMidPointMarkers = setMidPointMarkers(routeList);
-		printRouteProperties();
+		//printRouteProperties();
 
 		assignRoutesToAirports();
-//		printAirportMarkers();
+		//printAirportMarkers();
 		map.addMarkers(routeList);
 		map.addMarkers(airportList);
 		map.addMarkers(routesMidPointMarkers);
@@ -121,32 +122,34 @@ public class AirportMap extends PApplet {
 	public void mouseClicked()
 	{
 		lastClicked = selectMarkerIfClicked(airportList);
+		List<Marker> airportsConnected = new ArrayList<Marker>();
+		
+		//TODO 
+		// display info of airports connected to lastClicked
 		
 		if (lastClicked == null) {
 			displayMarkers(airportList);
 			deselectMarkers(airportList);
 			displayMarkers(routeList);
 			hideMarkers(routesMidPointMarkers);
+			midPoints = new ArrayList<Marker>();
 		} else {
 			// first hide all markers
 			hideMarkers(airportList);
 			hideMarkers(routeList);
+			hideMarkers(midPoints);
 			// then display markers related to lastClicked (airports and routes)
 			lastClicked.setHidden(false);
-			displayMarkers(getAirportsConnectedToLastClicked(lastClicked));
+			airportsConnected = getAirportsConnectedToLastClicked(lastClicked);
+			selectMarkers(airportsConnected);
+			displayMarkers(airportsConnected);
 			displayMarkers(getRoutesConnectingAirport(lastClicked));
-			displayMarkers( getMidPointsOfDisplayedRoutes(routeList, routesMidPointMarkers) );
-			//printRoutesScreenPostions(getRoutesConnectingAirport(lastClicked));
+			midPoints = getMidPointsOfDisplayedRoutes(routeList, routesMidPointMarkers);
+			displayMarkers(midPoints);
 		}
 	}
 	
 	// Helper methods
-//	private void printRoutesScreenPostions(List<Marker> routeList) {
-//		for(Marker route : routeList) {
-//			SimpleLinesMarker slmRoute = (SimpleLinesMarker) route;
-//			System.out.println( "sl.getScreenPosition(map): " + slmRoute.getLocation().x + " " + slmRoute.getLocation().y );		
-//		}
-//	}
 	
 	private List<Marker> setMidPointMarkers(List<Marker> routes) {
 		List<Marker> midPointMarkers = new ArrayList<Marker>();
@@ -412,6 +415,12 @@ public class AirportMap extends PApplet {
 	private void deselectMarkers(List<Marker> markers) {
 		for(Marker marker : markers) {
 			marker.setSelected(false); 
+		}
+	}
+	
+	private void selectMarkers(List<Marker> markers) {
+		for(Marker marker : markers) {
+			marker.setSelected(true); 
 		}
 	}
 	
